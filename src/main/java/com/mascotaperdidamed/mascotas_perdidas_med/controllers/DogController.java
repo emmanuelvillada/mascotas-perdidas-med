@@ -2,41 +2,43 @@ package com.mascotaperdidamed.mascotas_perdidas_med.controllers;
 
 import com.mascotaperdidamed.mascotas_perdidas_med.models.Dog;
 import com.mascotaperdidamed.mascotas_perdidas_med.services.DogService;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Optional;
 import java.util.List;
 
 @RestController
+@RequestMapping("/api/dogs")
 public class DogController {
     
     @Autowired
     private DogService dogService;
 
-    @GetMapping("/dogs")
-    public ResponseEntity<List<Dog>> getAllDogs() {
-        List<Dog> dogs = dogService.getAllDogs();
-        return new ResponseEntity<>(dogs, HttpStatus.OK);
-    }
-    
-    @GetMapping("/dogs/{id}")
-    public ResponseEntity<Dog> getDogById(@PathVariable Long id) {
-        Dog dog = dogService.getDogById(id);
-        return new ResponseEntity<>(dog, HttpStatus.OK);
+    @GetMapping
+    public List<Dog> getAllDogs() {
+        return dogService.getAllDogs();
     }
 
-    @PostMapping("/dogs")
-    public ResponseEntity<Dog> createDog(@RequestBody Dog dog) {
-        Dog createdDog = dogService.createDog(dog);
-        return new ResponseEntity<>(createdDog, HttpStatus.CREATED);
+    @GetMapping("/{id}")
+    public Optional<Dog> getDogById(@PathVariable Long id) {
+        return dogService.getDogById(id);
     }
 
-    @PutMapping("/dogs/{id}")
-    public ResponseEntity<Dog> updateDog(@PathVariable Long id, @RequestBody Dog dog) {
-        Dog updatedDog = dogService.updateDog(id, dog);
-        return new ResponseEntity<>(updatedDog, HttpStatus.OK);
+    @PostMapping
+    public Dog createDog(@RequestBody Dog dog) {
+        return dogService.saveDog(dog);
+
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteDog(@PathVariable Long id) {
+        dogService.deleteDog(id);
+    }
+
+    @GetMapping("/search")
+    public List<Dog> searchDogs(@RequestParam String location) {
+        return dogService.findByLocation(location);
     }
 
 }

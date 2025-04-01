@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine # Versión ligera
+    container_name: postgres_db
+    environment:
+      POSTGRES_USER: postgres # Usuario
+      POSTGRES_PASSWORD: 1903 # Contraseña
+      POSTGRES_DB: mascota_perdida # Base de datos inicial
+    ports:
+      - '5432:5432' # Puerto para conectar desde Spring Boot
+    volumes:
+      - postgres_data:/var/lib/postgresql/data # Persistencia de datos
+    restart: unless-stopped
+
+  pgadmin:
+    image: dpage/pgadmin4 # Imagen oficial de pgAdmin
+    container_name: pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: emmanuelvillada1903@gmail.com # Credenciales pgAdmin
+      PGADMIN_DEFAULT_PASSWORD: 1903 # Contraseña
+    ports:
+      - '5050:80' # Accede en http://localhost:5050
+    restart: unless-stopped
+    depends_on:
+      - postgres
+
+volumes:
+  postgres_data: # Volumen para persistir datos de PostgreSQL
